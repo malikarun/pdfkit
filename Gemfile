@@ -9,4 +9,6 @@ group :development, :test do
   gem 'pry'
 end
 
+gem "rack", "< 2.0.0"
+
 gemspec
