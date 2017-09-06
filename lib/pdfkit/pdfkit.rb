@@ -16,6 +16,18 @@ class PDFKit
     end
   end
 
+  class ExecutionError < StandardError
+    attr_reader :status, :command, :stderr
+
+    def initialize(status:, command:, stderr:)
+      @status = status
+      @command = command
+      @stderr = stderr
+
+      super("command failed (exitstatus=#{status}): #{command}\n  #{stderr}")
+    end
+  end
+
   attr_accessor :source, :stylesheets
   attr_reader :renderer
 
@@ -87,7 +99,7 @@ class PDFKit
     if successful?(status) && !empty_result?(path, result)
       result
     else
-      raise "command failed (exitstatus=#{status.exitstatus}): #{invoke}\n  #{err}"
+      raise PDFKit::ExecutionError.new(status: status.exitstatus, command: invoke, stderr: err)
     end
   end
 
