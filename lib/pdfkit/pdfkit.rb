@@ -134,7 +134,9 @@ class PDFKit
   end
 
   def style_tag_for(stylesheet)
-    "<style>#{File.read(stylesheet)}</style>"
+    style = "<style>#{File.read(stylesheet)}</style>"
+    style = style.html_safe if style.respond_to?(:html_safe)
+    style
   end
 
   def preprocess_html
@@ -149,7 +151,9 @@ class PDFKit
 
     stylesheets.each do |stylesheet|
       if @source.to_s.match(/<\/head>/)
-        @source = Source.new(@source.to_s.gsub(/(<\/head>)/) {|s| style_tag_for(stylesheet) + s })
+        @source = Source.new(@source.to_s.gsub(/(<\/head>)/) {|s|
+          style_tag_for(stylesheet) + (s.respond_to?(:html_safe) ? s.html_safe : s)
+        })
       else
         @source.to_s.insert(0, style_tag_for(stylesheet))
       end
