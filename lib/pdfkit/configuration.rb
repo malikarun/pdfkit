@@ -23,7 +23,7 @@ class PDFKit
     end
 
     def default_wkhtmltopdf
-      @default_command_path ||= (defined?(Bundler::GemfileError) && File.exists?('Gemfile') ? `bundle exec which wkhtmltopdf` : `which wkhtmltopdf`).chomp
+      @default_command_path ||= (defined?(Bundler::GemfileError) && File.exist?('Gemfile') ? `bundle exec which wkhtmltopdf` : `which wkhtmltopdf`).chomp
     end
 
     def wkhtmltopdf=(path)
